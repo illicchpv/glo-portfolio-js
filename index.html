@@ -1,22 +1,14 @@
 <!DOCTYPE html>
 <html lang="ru">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Document</title>
 </head>
+
 <body>
-  <demo-component user-name="Алекс"></demo-component>
 
-  <script type="module" src="./components/demo/DemoComponent.js"></script>
+</body>
 
-  <script>
-    document.querySelector('demo-component').addEventListener('demo-action', (event) => {
-      console.log('Событие поймано!', event.detail);
-      alert(event.detail.message);
-    });
-  </script>
-</body>
-  <script type="module" src="./components/base/BaseComponent.js"></script>
-</body>
 </html>
