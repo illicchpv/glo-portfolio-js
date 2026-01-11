@@ -1,0 +1,35 @@
+<style>
+  .nav-bar {
+    border: 2px dashed #007bff;
+    padding: 20px;
+    margin: 20px;
+    border-radius: 8px;
+    font-family: sans-serif;
+  }
+
+  .nav-bar__title {
+    color: #007bff;
+    margin-top: 0;
+  }
+
+  .nav-bar__btn {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-top: 10px;
+  }
+
+  .nav-bar__btn:hover {
+    background-color: #0056b3;
+  }
+</style>
+<div class="nav-bar">
+  <h2 class="nav-bar__title">это: &lt;nav-bar, user-name="<span>Гость</span>"&gt;!</h2>
+
+  <slot>Место для вашего контента</slot>
+
+  <button id="action-btn" class="nav-bar__btn">Нажми меня</button>
+</div>
