@@ -6,9 +6,17 @@
   <title>Document</title>
 </head>
 <body>
-  <demo-component></demo-component>
+  <demo-component user-name="Алекс"></demo-component>
 
   <script type="module" src="./components/demo/DemoComponent.js"></script>
+
+  <script>
+    document.querySelector('demo-component').addEventListener('demo-action', (event) => {
+      console.log('Событие поймано!', event.detail);
+      alert(event.detail.message);
+    });
+  </script>
+</body>
   <script type="module" src="./components/base/BaseComponent.js"></script>
 </body>
 </html>
