@@ -1,35 +1,50 @@
 <style>
   .nav-bar {
-    border: 2px dashed #007bff;
-    padding: 20px;
-    margin: 20px;
-    border-radius: 8px;
-    font-family: sans-serif;
+    max-width: 870px;
+    width: 100%;
+    margin-inline: auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 39px;
   }
 
-  .nav-bar__title {
-    color: #007bff;
-    margin-top: 0;
+  .nav-bar__list {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    list-style: none;
   }
 
-  .nav-bar__btn {
-    background-color: #007bff;
-    color: white;
-    border: none;
-    padding: 8px 16px;
-    border-radius: 4px;
-    cursor: pointer;
-    margin-top: 10px;
+  .nav-bar__link {
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 1.5;
+    color: var(--brand-900);
+    text-decoration: none;
   }
 
-  .nav-bar__btn:hover {
-    background-color: #0056b3;
+  .nav-bar__link--active {
+    font-weight: 700;
   }
 </style>
+
 <div class="nav-bar">
-  <h2 class="nav-bar__title">это: &lt;nav-bar, user-name="<span>Гость</span>"&gt;!</h2>
-
-  <slot>Место для вашего контента</slot>
-
-  <button id="action-btn" class="nav-bar__btn">Нажми меня</button>
+  <img class="nav-bar__logo" src="img/logo.svg" alt="Логотип">
+  <nav class="nav-bar__nav">
+    <ul class="nav-bar__list">
+      <li class="nav-bar__item">
+        <a href="#" class="nav-bar__link nav-bar__link--active">Главная</a>
+      </li>
+      <li class="nav-bar__item">
+        <a href="#" class="nav-bar__link">Проекты</a>
+      </li>
+      <li class="nav-bar__item">
+        <a href="#" class="nav-bar__link">Обо мне</a>
+      </li>
+      <li class="nav-bar__item">
+        <a href="#" class="nav-bar__link">Контакты</a>
+      </li>
+    </ul>
+  </nav>
 </div>

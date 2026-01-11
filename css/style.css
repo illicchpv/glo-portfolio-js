@@ -1,0 +1,22 @@
+:root {
+	--brand-900: #bf7506;
+	--brand-500: #dd9c3c;
+	--brand-100: #f4debe;
+	--neutral-900: #211b12;
+	--neutral-500: #83807c;
+	--neutral-100: #e0dedc;
+}
+:root {
+  --font-family: "Inter", sans-serif;
+  --second-family: "Helvetica", sans-serif;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: var(--font-family);
+}

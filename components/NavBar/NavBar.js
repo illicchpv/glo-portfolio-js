@@ -69,6 +69,7 @@ export class NavBar extends BaseComponent {
 customElements.define('nav-bar', NavBar);
 
 /* создание с обработкой сообщений компонента 👇
+<script type="module" src="./components/NavBar/NavBar.js"></script>
 <nav-bar>⭐Это контент, попадет в &lt;slot&gt;🙃&lt;/slot&gt;.</nav-bar>
 <script>
   document.querySelector('nav-bar').addEventListener('nav-bar-action', (event) => {
