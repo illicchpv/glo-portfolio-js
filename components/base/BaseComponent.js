@@ -3,7 +3,145 @@ export class BaseComponent extends HTMLElement {
     super();
     this.html = null;
     this.initialContent = null;
+    this._initProperties();
   }
+
+  /**
+   * Определяет наблюдаемые атрибуты на основе конфигурации properties.
+   */
+  static get observedAttributes() {
+    const props = this.properties || {};
+    return Object.values(props)
+      .filter(prop => prop.attribute)
+      .map(prop => prop.attribute);
+  }
+
+  /**
+   * Конфигурация свойств компонента.
+   * Переопределите этот геттер в дочернем классе.
+   * @returns {Object}
+   */
+  static get properties() {
+    return {};
+  }
+
+  /**
+   * Инициализация свойств на основе статической конфигурации properties.
+   */
+  _initProperties() {
+    const props = this.constructor.properties || {};
+    
+    Object.keys(props).forEach(name => {
+      const config = props[name];
+      const attributeName = config.attribute;
+      
+      // Инициализируем внутреннее значение
+      const internalName = `_${name}`;
+      
+      // Определение начального значения
+      // Приоритет: значение на экземпляре (поле класса) -> дефолтное из конфига -> null
+      let initialValue = config.default;
+      if (Object.prototype.hasOwnProperty.call(this, name)) {
+        initialValue = this[name];
+        // Удаляем свойство, чтобы оно не перекрывало будущие геттеры/сеттеры
+        delete this[name];
+      }
+      
+      this[internalName] = initialValue !== undefined ? initialValue : null;
+
+      // Если в прототипе (классе) уже есть геттер/сеттер, мы его не переопределяем,
+      // но предполагаем, что пользователь сам обработает логику.
+      // Однако, для полной автоматизации, мы определяем свои аксессоры на экземпляре.
+      // Чтобы позволить пользователю переопределять, проверим наличие в прототипе:
+      // const hasPrototypeGetter = ... 
+      // В данном простом варианте мы всегда создаем аксессоры на экземпляре, 
+      // если пользователь запросил это через properties.
+      
+      Object.defineProperty(this, name, {
+        get() {
+          return this[internalName];
+        },
+        set(value) {
+          const oldValue = this[internalName];
+          this[internalName] = value;
+
+          // Отражение свойства в атрибут
+          if (attributeName) {
+            if (value === null || value === undefined || value === false) {
+              this.removeAttribute(attributeName);
+            } else {
+              const attrValue = config.type === Boolean ? '' : String(value);
+              if (this.getAttribute(attributeName) !== attrValue) {
+                this.setAttribute(attributeName, attrValue);
+              }
+            }
+          }
+
+          if (oldValue !== value) {
+            this.propertyChangedCallback(name, oldValue, value);
+          }
+        },
+        configurable: true,
+        enumerable: true
+      });
+      
+      // Применяем начальное значение через сеттер, чтобы синхронизировать атрибуты
+      if (this[internalName] !== null && this[internalName] !== undefined) {
+          // Вызываем сеттер, но аккуратно, чтобы не триггерить лишние колбэки если не надо
+          // Но нам надо синхронизировать атрибут
+          const val = this[internalName];
+          // Сброс для триггера сеттера (немного хак, но надежно)
+          // this[name] = val; 
+          // Проще вручную выставить атрибут если его нет
+          if (attributeName && !this.hasAttribute(attributeName)) {
+               if (val !== null && val !== undefined && val !== false) {
+                   const attrValue = config.type === Boolean ? '' : String(val);
+                   this.setAttribute(attributeName, attrValue);
+               }
+          }
+      }
+    });
+  }
+
+  /**
+   * Обработчик изменений атрибутов.
+   * Автоматически синхронизирует атрибуты со свойствами.
+   */
+  attributeChangedCallback(name, oldValue, newValue) {
+    if (oldValue === newValue) return;
+
+    const props = this.constructor.properties || {};
+    
+    for (const propName in props) {
+      const config = props[propName];
+      if (config.attribute === name) {
+        let value = newValue;
+        
+        // Приведение типов
+        if (config.type === Boolean) {
+          value = newValue !== null;
+        } else if (config.type === Number) {
+          value = Number(newValue);
+        }
+
+        // Устанавливаем свойство (вызовет сеттер)
+        // Проверяем, отличается ли значение, чтобы избежать рекурсии, 
+        // хотя сеттер сам проверит getAttribute
+        if (this[propName] !== value) {
+          this[propName] = value;
+        }
+        break;
+      }
+    }
+  }
+
+  /**
+   * Хук, вызываемый при изменении свойства через сеттер.
+   * @param {string} name 
+   * @param {any} oldValue 
+   * @param {any} newValue 
+   */
+  propertyChangedCallback(name, oldValue, newValue) {}
 
   /**
    * Загружает HTML шаблон с именем, совпадающим с именем класса компонента.
@@ -23,7 +161,8 @@ export class BaseComponent extends HTMLElement {
     try {
       const response = await fetch(url);
       if (response.ok) {
-        this.html = await response.text();
+        const rawHtml = await response.text();
+        this.html = this._processTemplate(rawHtml);
         this.render();
       } else {
         console.error(`Ошибка загрузки шаблона ${templateName}: ${response.status}`);
@@ -31,6 +170,44 @@ export class BaseComponent extends HTMLElement {
     } catch (error) {
       console.error(`Ошибка при запросе шаблона ${templateName}:`, error);
     }
+  }
+
+  /**
+   * Обрабатывает шаблон: объединяет все стили в один блок и выносит в head.
+   * @param {string} htmlContent 
+   * @returns {string} HTML без стилей
+   */
+  _processTemplate(htmlContent) {
+    const tempDiv = document.createElement('div');
+    tempDiv.innerHTML = htmlContent;
+    
+    // Ищем все теги style
+    const styles = tempDiv.querySelectorAll('style');
+    
+    if (styles.length > 0) {
+      const styleId = `style-${this.constructor.name}`;
+      
+      // Если такого стиля еще нет в head, собираем все и добавляем
+      if (!document.getElementById(styleId)) {
+        let mergedCss = '';
+        styles.forEach(style => {
+          mergedCss += style.textContent + '\n';
+          style.remove();
+        });
+        
+        if (mergedCss.trim()) {
+          const newStyle = document.createElement('style');
+          newStyle.id = styleId;
+          newStyle.textContent = mergedCss;
+          document.head.appendChild(newStyle);
+        }
+      } else {
+        // Если стиль уже есть, просто удаляем теги из шаблона
+        styles.forEach(style => style.remove());
+      }
+    }
+    
+    return tempDiv.innerHTML;
   }
 
   render() {

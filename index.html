@@ -15,7 +15,33 @@
 <body>
   <nav-bar></nav-bar>
 
+  <section style="max-width: 800px; margin: 2rem auto;">
+    <h2>Demo TestComponent</h2>
+    
+    <!-- Пример 1: С дефолтными значениями -->
+    <test-component></test-component>
+    
+    <!-- Пример 2: С заданными атрибутами -->
+    <test-component 
+      user-name="Alex" 
+      user-age="25" 
+      is-male>
+    </test-component>
+
+    <!-- Пример для проверки реактивности через консоль -->
+    <script>
+      setTimeout(() => {
+        const comp = document.querySelector('test-component:first-of-type');
+        if (comp) {
+          console.log('Changing first component property dynamically...');
+          comp.userName = "Dynamic User";
+        }
+      }, 2000);
+    </script>
+  </section>
+
   <script type="module" src="./components/NavBar/NavBar.js"></script>
+  <script type="module" src="./components/TestComponent/TestComponent.js"></script>
 </body>
 
 </html>
