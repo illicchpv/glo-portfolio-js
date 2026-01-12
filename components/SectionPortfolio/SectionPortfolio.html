@@ -1,0 +1,121 @@
+<style>
+  .section-portfolio {}
+
+  .section-portfolio__heading {
+    font-weight: 700;
+    font-size: 48px;
+    line-height: 1.25;
+    letter-spacing: -0.03em;
+    color: var(--brand-900);
+    margin-bottom: 32px;
+  }
+
+  .cards {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    
+  }
+
+  .card {
+    max-width: 400px;
+    margin-bottom: 40px;
+  }
+
+  .card-text-wrapper {
+    padding: 16px;
+  }
+
+  .card-title {
+    font-weight: 700;
+    font-size: 24px;
+    line-height: 1.35;
+    letter-spacing: -0.02em;
+    color: var(--brand-900);
+    margin-top: 0;
+    margin-bottom: 8px;
+  }
+
+  .card-text {
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 1.5;
+    color: var(--neutral-900);
+  }
+
+  .tags {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    margin-top: 8px;
+    margin-bottom: 16px;
+  }
+
+  .tag {
+    border: 1px solid var(--brand-500);
+    border-radius: 4px;
+    padding: 5px 8px 4px;
+    background: #fff;
+    font-weight: 400;
+    font-size: 12px;
+    line-height: 1.5;
+    color: var(--neutral-900);
+    text-decoration: none;
+  }
+
+  .card-buttons {
+    display: flex;
+    align-items: center;
+    gap: 25px;
+  }
+</style>
+<section class="section-portfolio">
+  <h2 class="section-portfolio__heading">Последние проекты</h2>
+
+  <div class="cards">
+    <div class="card">
+      <img class="card-image" src="../../img/cards/image1.png" alt="мобильное приложение">
+
+      <div class="card-text-wrapper">
+        <h3 class="card-title">Мобильное приложение</h3>
+        <ul class="tags">
+          <li class="tag-item"><a class="tag" href="#">HTML</a></li>
+          <li class="tag-item"><a class="tag" href="#">CSS</a></li>
+          <li class="tag-item"><a class="tag" href="#">JavaScript</a></li>
+          <li class="tag-item"><a class="tag" href="#">GIT</a></li>
+          <li class="tag-item"><a class="tag" href="#">Vitejs</a></li>
+        </ul>
+        <p class="card-text">Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+
+        <div class="card-buttons">
+          <btn-link src="../../img/code.svg" alt="code icon" href="#!">Код</btn-link>
+          <btn-link src="../../img/check.svg" alt="check icon" href="#!">Демо</btn-link>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="card">
+      <img class="card-image" src="../../img/cards/image2.png" alt="мобильное приложение">
+
+      <div class="card-text-wrapper">
+        <h3 class="card-title">Одностраничный промо-сайт</h3>
+        <ul class="tags">
+          <li class="tag-item"><a class="tag" href="#">HTML</a></li>
+          <li class="tag-item"><a class="tag" href="#">CSS</a></li>
+        </ul>
+        <p class="card-text">Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+
+        <div class="card-buttons">
+          <btn-link src="../../img/code.svg" alt="code icon" href="#!">Код</btn-link>
+          <btn-link src="../../img/check.svg" alt="check icon" href="#!">Демо</btn-link>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</section>

@@ -40,13 +40,14 @@
   .header-block__links {
     display: flex;
     align-items: center;
+    gap: 55px;
   }
 
   .social-link {
     padding: 16px;
   }
 
-  .cv-download {
+  /* .cv-download {
     margin-left: 55px;
     padding: 7px 8px;
     display: flex;
@@ -60,7 +61,7 @@
     color: var(--neutral-900);
 
     border-bottom: 2px solid var(--brand-900);
-  }
+  } */
 </style>
 <header class="header-block">
   <img class="header-block__avatar" src="../../img/avatar.png" alt="avatar">
@@ -79,10 +80,11 @@
         <li class="social-item"><a class="social-link" href=""><img class="social-logo" src="../../img/social/twitter.svg" alt="twitter"></a></li>
         <li class="social-item"><a class="social-link" href=""><img class="social-logo" src="../../img/social/youtube.svg" alt="youtube"></a></li>
       </ul>
-      <a class="cv-download" href="#" download>
+      <btn-link src="../../img/download.svg" alt="download" href="#!" attr="download">Скачать резюме</btn-link>      
+      <!-- <a class="cv-download" href="#" download>
         <img class="cv-icon" src="../../img/download.svg" alt="download">
         <span class="cv-text">Скачать резюме</span>
-      </a>
+      </a> -->
     </div>
   </div>
 </header>
