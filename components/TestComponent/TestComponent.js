@@ -36,14 +36,36 @@ export class TestComponent extends BaseComponent {
     super.render();
     this._cacheElements();
     this.updateView();
+    this._setupEventListeners();
   }
 
   _cacheElements() {
     this._refs = {
       nameEl: this.querySelector('.test-component__name'),
       ageEl: this.querySelector('.test-component__age'),
-      genderEl: this.querySelector('.test-component__gender')
+      genderEl: this.querySelector('.test-component__gender'),
+      btn: this.querySelector('.test-component__btn')
     };
+  }
+
+  _setupEventListeners() {
+    const { btn } = this._refs;
+    if (btn) {
+      // Удаляем старый слушатель, если он был (хотя при полном рендере это новый элемент)
+      // Но для чистоты можно использовать { once: true } или сохранять ссылку на функцию
+      btn.addEventListener('click', () => {
+        this.dispatchEvent(new CustomEvent('test-component-action', {
+          detail: {
+            userName: this.userName,
+            userAge: this.userAge,
+            isMale: this.isMale,
+            component: this
+          },
+          bubbles: true,
+          composed: true
+        }));
+      });
+    }
   }
 
   // Хук изменения свойств из BaseComponent

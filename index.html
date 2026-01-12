@@ -37,6 +37,12 @@
           comp.userName = "Dynamic User";
         }
       }, 2000);
+
+      // Обработка события от test-component
+      document.addEventListener('test-component-action', (event) => {
+        const { userName, userAge, isMale, component } = event.detail;
+        console.log('TestComponent Action:', { userName, userAge, isMale, component });
+      });
     </script>
   </section>
 
