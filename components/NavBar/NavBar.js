@@ -41,6 +41,7 @@ export class NavBar extends BaseComponent {
 
   connectedCallback() {
     this.loadTemplate(import.meta.url);
+    if (getComputedStyle(this).display !== 'block') this.style.display = 'inline-block';
   }
 
   // Вызывается при загрузке шаблона (из BaseComponent)
