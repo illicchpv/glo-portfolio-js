@@ -53,9 +53,19 @@
     });
   </script>
 
+<good-test>
+  ⭐Это контент, попадет в &lt;slot&gt;🙃&lt;/slot&gt;.
+  ⭐Это контент, попадет в &lt;slot&gt;🙃&lt;/slot&gt;.<br>
+</good-test>
+<script>
+  document.querySelector('good-test').addEventListener('good-test-action', (event) => {
+    console.log('Событие от good-test!', event.detail);
+  });
+</script>  
+
   <script type="module" src="./components/NavBar/NavBar.js"></script>
   <script type="module" src="./components/TestComponent/TestComponent.js"></script>
-  <script type="module" src="./components/NewTest/NewTest.js"></script>
+  <script type="module" src="./components/GoodTest/GoodTest.js"></script>
 </body>
 
 </html>
