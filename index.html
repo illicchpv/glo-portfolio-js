@@ -17,15 +17,15 @@
 
   <section style="max-width: 800px; margin: 2rem auto;">
     <h2>Demo TestComponent</h2>
-    
+
     <!-- Пример 1: С дефолтными значениями -->
     <test-component></test-component>
-    
+
     <!-- Пример 2: С заданными атрибутами -->
-    <test-component 
-      user-name="Alex" 
-      user-age="25" 
-      is-male>
+    <test-component
+                    user-name="Alex"
+                    user-age="25"
+                    is-male>
     </test-component>
 
     <!-- Пример для проверки реактивности через консоль -->
@@ -40,14 +40,22 @@
 
       // Обработка события от test-component
       document.addEventListener('test-component-action', (event) => {
-        const { userName, userAge, isMale, component } = event.detail;
-        console.log('TestComponent Action:', { userName, userAge, isMale, component });
+        const {userName, userAge, isMale, component} = event.detail;
+        console.log('TestComponent Action:', {userName, userAge, isMale, component});
       });
     </script>
   </section>
 
+  <new-test user-name="User"></new-test>
+  <script>
+    document.querySelector('new-test').addEventListener('new-test-action', (event) => {
+      console.log('Action:', event.detail);
+    });
+  </script>
+
   <script type="module" src="./components/NavBar/NavBar.js"></script>
   <script type="module" src="./components/TestComponent/TestComponent.js"></script>
+  <script type="module" src="./components/NewTest/NewTest.js"></script>
 </body>
 
 </html>
