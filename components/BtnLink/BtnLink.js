@@ -92,5 +92,5 @@ customElements.define('btn-link', BtnLink);
     console.log('Action:', event.detail);
   });
 </script>
-<script type="module" src="./components/BtnLink/BtnLink.js"></script>
+<script type="module" src="components/BtnLink/BtnLink.js"></script>
 */

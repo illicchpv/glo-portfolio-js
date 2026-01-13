@@ -90,5 +90,5 @@ customElements.define('section-portfolio', SectionPortfolio);
     console.log('Action:', event.detail);
   });
 </script>
-<script type="module" src="./components/SectionPortfolio/SectionPortfolio.js"></script>
+<script type="module" src="components/SectionPortfolio/SectionPortfolio.js"></script>
 */

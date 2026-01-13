@@ -90,5 +90,5 @@ customElements.define('header-block', HeaderBlock);
     console.log('Action:', event.detail);
   });
 </script>
-<script type="module" src="./components/HeaderBlock/HeaderBlock.js"></script>
+<script type="module" src="components/HeaderBlock/HeaderBlock.js"></script>
 */
