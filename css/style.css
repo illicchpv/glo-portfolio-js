@@ -26,3 +26,9 @@ body {
   width: 100%;
   margin-inline: auto;
 }
+
+.form-container {
+  max-width: 435px;
+  width: 100%;
+  margin-inline: auto;
+}
