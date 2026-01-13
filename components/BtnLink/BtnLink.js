@@ -1,4 +1,4 @@
-import { BaseComponent } from '../../components/base/BaseComponent.js';
+import {BaseComponent} from '../../components/base/BaseComponent.js';
 
 export class BtnLink extends BaseComponent {
   static get properties() {
@@ -67,13 +67,13 @@ export class BtnLink extends BaseComponent {
   // }
 
   updateView() {
-    const { srcEl, hrefEl, attrEl, altEl } = this._refs;
+    const {srcEl, hrefEl, attrEl, altEl} = this._refs;
     if (srcEl) srcEl.setAttribute('src', this.src);
     if (altEl) srcEl.setAttribute('alt', this.alt);
 
     if (hrefEl) hrefEl.setAttribute('href', this.href);
     if (attrEl) {
-      if(this.attr)
+      if (this.attr)
         attrEl.setAttribute(this.attr, '');
       else
         attrEl.removeAttribute(this.attr);

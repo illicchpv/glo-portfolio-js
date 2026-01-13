@@ -1,0 +1,63 @@
+<style>
+  section-feedback {
+    .feedback {
+      padding: 80px 0 160px;
+    }
+
+    .input-group {
+      position: relative;
+      padding-top: 9px;
+      margin-bottom: 24px;
+    }
+
+    .input-label {
+      position: absolute;
+      top: 0;
+      left: 16px;
+      font-weight: 400;
+      font-size: 16px;
+      line-height: 1.5;
+      color: var(--neutral-500);
+      padding: 0 8px;
+      background: #fff;
+    }
+
+    .input {
+      border: 3px solid var(--neutral-100);
+      border-radius: 4px;
+      width: 435px;
+      height: 56px;
+    }
+
+    .input.textarea {
+      min-height: 144px;
+      resize: none;
+    }
+
+    .button-group {
+      display: flex;
+      justify-content: flex-end;
+    }
+  }
+</style>
+<section class="feedback">
+  <h2 class="feedback-title">Готов обсудить проект...</h2>
+  <form class="feedback-form" action="#" method="post">
+    <div class="input-group">
+      <label class="input-label" for="userName">Имя</label>
+      <input class="input" id="userName" type="text" name="userName" required>
+    </div>
+    <div class="input-group">
+      <label class="input-label" for="userEmail">Email</label>
+      <input class="input" id="userEmail" type="email" name="userEmail" required>
+    </div>
+    <div class="input-group">
+      <label class="input-label" for="userMessage">Сообщение</label>
+      <textarea class="input textarea" id="userMessage" name="userMessage" required></textarea>
+    </div>
+
+    <div class="button-group">
+      <btn-link btn-type="button" src="img/send.svg">Отправить</btn-link>
+    </div>
+  </form>
+</section>

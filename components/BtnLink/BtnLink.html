@@ -14,18 +14,25 @@
   }
 </style>
 
-<a class="btn-link" href="#" >
+<a class="btn-link" href="#">
   <img class="btn-link-icon" src="img/download.svg" alt="download">
-  <span class="btn-link-text"><slot></slot></span>
+  <span class="btn-link-text">
+    <slot></slot>
+  </span>
 </a>
 <!-- endif -->
 
 <!-- if(this.btnType !== 'link') -->
- <style>
-  .btn-link {
+<style>
+  .btn-link.button {
+    border: none;
     border-bottom: 2px solid var(--brand-900);
+    background-color: transparent;
+    cursor: pointer;
   }
 </style>
-<button class="btn-link">button</button>
+<button class="btn-link button" type="submit">
+  <img class="btn-link-icon" src="img/send.svg" alt="send-icon">
+  <slot></slot>
+</button>
 <!-- endif -->
- 
