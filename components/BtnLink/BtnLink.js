@@ -3,6 +3,11 @@ import { BaseComponent } from '../../components/base/BaseComponent.js';
 export class BtnLink extends BaseComponent {
   static get properties() {
     return {
+      btnType: {
+        type: String,
+        attribute: 'btn-type',
+        default: 'link'
+      },
       src: {
         type: String,
         attribute: 'src',
@@ -23,11 +28,6 @@ export class BtnLink extends BaseComponent {
         attribute: 'alt',
         default: '?alt?'
       },
-      isMale: {
-        type: Boolean,
-        attribute: 'is-male',
-        default: false
-      }
     };
   }
 

@@ -165,14 +165,56 @@ export class BaseComponent extends HTMLElement {
       const response = await fetch(url);
       if (response.ok) {
         const rawHtml = await response.text();
-        this.html = this._processTemplate(rawHtml);
-        this.render();
+        // Сохраняем сырой шаблон
+        this._rawHtml = this._processTemplate(rawHtml);
+        // Обрабатываем условия и рендерим
+        this.forceUpdate();
       } else {
         console.error(`Ошибка загрузки шаблона ${templateName}: ${response.status}`);
       }
     } catch (error) {
       console.error(`Ошибка при запросе шаблона ${templateName}:`, error);
     }
+  }
+
+  /**
+   * Принудительно обновляет отображение, заново обрабатывая условия в шаблоне.
+   */
+  forceUpdate() {
+    if (this._rawHtml) {
+      this.html = this._processConditionals(this._rawHtml);
+      this.render();
+    }
+  }
+
+  /**
+   * Обрабатывает условные конструкции <!-- if(...) --> ... <!-- endif -->
+   * @param {string} html 
+   * @returns {string} HTML с обработанными условиями
+   */
+  _processConditionals(html) {
+    // Регулярное выражение для поиска блоков if
+    // Ищем <!-- if(condition) --> content <!-- endif -->
+    // [\s\S]*? - ленивый поиск любого символа, включая переносы строк
+    const regex = /<!--\s*if\((.*?)\)\s*-->([\s\S]*?)<!--\s*endif\s*-->/g;
+
+    return html.replace(regex, (match, condition, content) => {
+      try {
+        // Создаем функцию для проверки условия в контексте компонента
+        // Используем new Function вместо eval для чуть большей изоляции (хотя всё равно доступ к this)
+        const checkCondition = new Function('return ' + condition);
+        
+        // Вызываем функцию с привязкой к текущему экземпляру (this)
+        if (checkCondition.call(this)) {
+          return content;
+        } else {
+          return '';
+        }
+      } catch (e) {
+        console.error(`Ошибка при вычислении условия "${condition}":`, e);
+        return match; // В случае ошибки возвращаем как было
+      }
+    });
   }
 
   /**
