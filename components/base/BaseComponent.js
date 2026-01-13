@@ -150,6 +150,9 @@ export class BaseComponent extends HTMLElement {
    * @param {string} baseUrl - URL текущего модуля (передайте import.meta.url из наследника)
    */
   async loadTemplate(baseUrl) {
+    // Сохраняем baseUrl для последующего разрешения путей
+    this._baseUrl = baseUrl;
+
     // Сохраняем исходный контент перед загрузкой шаблона
     if (this.innerHTML.trim()) {
       this.initialContent = this.innerHTML;
@@ -223,12 +226,45 @@ export class BaseComponent extends HTMLElement {
         if (slot) {
           slot.innerHTML = this.initialContent;
           this.innerHTML = tempDiv.innerHTML;
+          this._resolveImagePaths();
           return;
         }
       }
 
       // Стандартное поведение
       this.innerHTML = this.html;
+      this._resolveImagePaths();
     }
+  }
+
+  /**
+   * Разрешает относительные пути к изображениям и ресурсам
+   */
+  _resolveImagePaths() {
+    if (!this._baseUrl) return;
+
+    // Находим все элементы с атрибутом src
+    const elements = this.querySelectorAll('[src]');
+    
+    elements.forEach(el => {
+      const src = el.getAttribute('src');
+      if (src && (src.startsWith('./') || src.startsWith('../'))) {
+        try {
+          // Вычисляем абсолютный путь относительно JS файла компонента
+          const absoluteSrc = new URL(src, this._baseUrl).href;
+          
+          // Для img обновляем свойство src (и атрибут)
+          if (el.tagName === 'IMG') {
+            el.src = absoluteSrc; 
+          } 
+          // Для остальных (custom elements) обновляем атрибут
+          else {
+            el.setAttribute('src', absoluteSrc);
+          }
+        } catch (e) {
+          console.warn('Failed to resolve path:', src, e);
+        }
+      }
+    });
   }
 }
