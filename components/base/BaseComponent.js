@@ -215,24 +215,46 @@ export class BaseComponent extends HTMLElement {
 
   render() {
     if (this.html) {
-      // Если есть сохраненный контент, пытаемся вставить его в слот
-      if (this.initialContent) {
-        // Создаем временный контейнер для парсинга HTML
-        const tempDiv = document.createElement('div');
-        tempDiv.innerHTML = this.html;
+      const templateDiv = document.createElement('div');
+      templateDiv.innerHTML = this.html;
 
-        // Ищем слот
-        const slot = tempDiv.querySelector('slot');
-        if (slot) {
-          slot.innerHTML = this.initialContent;
-          this.innerHTML = tempDiv.innerHTML;
-          this._resolveImagePaths();
-          return;
+      if (this.initialContent) {
+        const userContentDiv = document.createElement('div');
+        userContentDiv.innerHTML = this.initialContent;
+
+        // 1. Обработка именованных слотов
+        const namedSlots = templateDiv.querySelectorAll('slot[name]');
+        namedSlots.forEach(slot => {
+          const slotName = slot.getAttribute('name');
+          const userElements = userContentDiv.querySelectorAll(`[slot="${slotName}"]`);
+          
+          if (userElements.length > 0) {
+            slot.innerHTML = '';
+            userElements.forEach(el => slot.appendChild(el));
+          }
+        });
+
+        // 2. Обработка дефолтного слота
+        const defaultSlot = templateDiv.querySelector('slot:not([name])');
+        if (defaultSlot) {
+          const defaultNodes = Array.from(userContentDiv.childNodes).filter(node => {
+            // Исключаем элементы, у которых есть атрибут slot (даже если они не нашли пару)
+            return node.nodeType !== Node.ELEMENT_NODE || !node.hasAttribute('slot');
+          });
+
+          // Если есть полезный контент (не только пробелы)
+          const hasContent = defaultNodes.some(node => 
+            node.nodeType === Node.ELEMENT_NODE || (node.nodeType === Node.TEXT_NODE && node.textContent.trim() !== '')
+          );
+
+          if (hasContent) {
+            defaultSlot.innerHTML = '';
+            defaultNodes.forEach(node => defaultSlot.appendChild(node));
+          }
         }
       }
 
-      // Стандартное поведение
-      this.innerHTML = this.html;
+      this.innerHTML = templateDiv.innerHTML;
       this._resolveImagePaths();
     }
   }
