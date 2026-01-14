@@ -26,6 +26,7 @@ export class NextTest extends BaseComponent {
     this._refs = {};
     // Данные для демонстрации списка через innerTemplate
     this.items = [
+      {name: 'Pavel', role: 'Developer'},
       {name: 'Alice', role: 'Developer'},
       {name: 'Bob', role: 'Designer'},
       {name: 'Charlie', role: 'Manager'}
@@ -101,3 +102,8 @@ export class NextTest extends BaseComponent {
 }
 
 customElements.define('next-test', NextTest);
+
+/* применение компонента NextTest
+  <next-test class="container"></next-test>
+  <script type="module" src="components/NextTest/NextTest.js"></script>
+*/
