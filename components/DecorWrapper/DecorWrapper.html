@@ -1,0 +1,26 @@
+<style>
+  decor-wrapper {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+
+    .decor-container {
+      position: relative;
+      width: var(--input-width);
+      height: 0px;
+      margin: 0 auto;
+    }
+
+    .decor-img {
+      position: absolute;
+      top: 20px;
+      right: calc(-1 * var(--hand-width) + 80px);
+      width: var(--hand-width);
+      object-fit: cover;
+    }
+  }
+</style>
+<div class="decor-container">
+  <img class="decor-img" src="img/hand.png" alt="decor">
+</div>
+<slot></slot>

@@ -10,18 +10,27 @@
   --font-family: "Inter", sans-serif;
   --second-family: "Helvetica", sans-serif;
 }
+:root {
+  --input-width: 435px;
+  --hand-width: 680px;
+}
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
+html {
+  scroll-behavior: smooth;
+}
 body {
   font-family: var(--font-family);
+  overflow-x: hidden;
 }
 .container {
   max-width: 870px;
   width: 100%;
   margin-inline: auto;
+  padding-inline: 10px;
 }
 .form-container {
   max-width: 435px;

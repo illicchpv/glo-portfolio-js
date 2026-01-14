@@ -12,7 +12,7 @@
 
   <link href="css/normalize.css" rel="stylesheet">
   <link href="css/style.css" rel="stylesheet">
-  
+
   <title>Артём - Портфолио</title>
   <!-- тут ☝️ будут вставляться стили компонентов -->
 
@@ -22,11 +22,13 @@
 <body>
 
   <nav-bar class="container"></nav-bar>
-  <header-block class="container"></header-block>
-  <section-portfolio class="container"></section-portfolio>
-  <section-developer class="container"></section-developer>
-  <section-skills class="container"></section-skills>
-  <section-feedback class="form-container"></section-feedback>
+  <header-block id="main" class="container"></header-block>
+  <section-portfolio id="portfolio" class="container"></section-portfolio>
+  <section-developer id="developer" class="container"></section-developer>
+  <section-skills id="skills" class="container"></section-skills>
+  <decor-wrapper>
+    <section-feedback id="feedback" class="form-container"></section-feedback>
+  </decor-wrapper>
   <footer-block class="container"></footer-block>
 
   <script type="module" src="components/NavBar/NavBar.js"></script>
@@ -37,6 +39,7 @@
   <script type="module" src="components/SectionSkills/SectionSkills.js"></script>
   <script type="module" src="components/SectionFeedback/SectionFeedback.js"></script>
   <script type="module" src="components/FooterBlock/FooterBlock.js"></script>
+  <script type="module" src="components/DecorWrapper/DecorWrapper.js"></script>
 
   <!-- <script type="module" src="components/NextTest/NextTest.js"></script>
   <next-test class="container"></next-test> -->
