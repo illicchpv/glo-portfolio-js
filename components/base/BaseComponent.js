@@ -144,6 +144,17 @@ export class BaseComponent extends HTMLElement {
   propertyChangedCallback(name, oldValue, newValue) { }
 
   /**
+   * Статический шаблон компонента.
+   * Если определен, компонент не будет пытаться загрузить HTML файл.
+   * Это предотвращает моргание интерфейса (нет асинхронного запроса).
+   * !Экранируйте внутренние переменные как \${this...}
+   * @returns {string|null}
+   */
+  static get template() {
+    return null;
+  }
+
+  /**
    * Загружает HTML шаблон с именем, совпадающим с именем класса компонента.
    * Шаблон ищется в той же директории, где находится файл компонента.
    * 
@@ -158,6 +169,15 @@ export class BaseComponent extends HTMLElement {
       this.initialContent = this.innerHTML;
     }
 
+    // 1. Проверяем статический шаблон (оптимизация против моргания)
+    const staticTemplate = this.constructor.template;
+    if (staticTemplate) {
+      this._rawHtml = this._processTemplate(staticTemplate);
+      this.forceUpdate();
+      return;
+    }
+
+    // 2. Если статического шаблона нет, грузим файл
     const templateName = `${this.constructor.name}.html`;
     const url = new URL(templateName, baseUrl).href;
 
