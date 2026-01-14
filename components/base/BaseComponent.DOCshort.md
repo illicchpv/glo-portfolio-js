@@ -31,7 +31,9 @@
   - Если есть, файл не грузится (нет моргания). Экранируйте внутренние переменные как \${this...}.
 - `loadTemplate(import.meta.url)`:
   - грузит HTML (или берёт статический);
-  - собирает `<style>` в `<head>` c id `style-ИмяКласса`;
+  - собирает `<style>` в один блок с id `style-ИмяКласса`;
+  - вставляет его в `<head>` сразу после `<title>` (если он есть);
+  - если `<title>` нет — пишет `console.warn` и добавляет в конец `<head>`;
   - сохраняет сырой HTML в `_rawHtml`;
   - вызывает `forceUpdate()`.
 
@@ -173,4 +175,3 @@
    - `innerTemplate` + `_processInnerTemplates` + `renderInnerTemplateList`;
    - `evaluateString` для текстов;
    - относительные пути `src` в шаблоне (автофикc BaseComponent).
-

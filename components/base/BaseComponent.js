@@ -344,7 +344,26 @@ export class BaseComponent extends HTMLElement {
           const newStyle = document.createElement('style');
           newStyle.id = styleId;
           newStyle.textContent = mergedCss;
-          document.head.appendChild(newStyle);
+
+          const head = document.head;
+          if (head) {
+            const titleEl = head.querySelector('title');
+            if (titleEl) {
+              const next = titleEl.nextSibling;
+              if (next) {
+                head.insertBefore(newStyle, next);
+              } else {
+                head.appendChild(newStyle);
+              }
+            } else {
+              console.warn(
+                `BaseComponent: <title> not found, styles for ${this.constructor.name} appended to end of <head>.`
+              );
+              head.appendChild(newStyle);
+            }
+          } else {
+            document.appendChild(newStyle);
+          }
         }
       } else {
         // Если стиль уже есть, просто удаляем теги из шаблона
