@@ -1,20 +1,13 @@
 <style>
   section-feedback {
-      /* background-image: url('img/hand.png');
-      background-size: 100%;
-      background-position: right bottom;
-      background-repeat: no-repeat; */
-
     .feedback {
       padding: 80px 0 160px;
     }
-
     .input-group {
       position: relative;
       padding-top: 9px;
       margin-bottom: 24px;
     }
-
     .input-label {
       position: absolute;
       top: 0;
@@ -26,19 +19,17 @@
       padding: 0 8px;
       background: #fff;
     }
-
     .input {
       border: 3px solid var(--neutral-100);
       border-radius: 4px;
       width: var(--input-width);
       height: 56px;
+      padding: 10px;
     }
-
     .input.textarea {
       min-height: 144px;
       resize: none;
     }
-
     .button-group {
       display: flex;
       justify-content: flex-end;
@@ -50,15 +41,15 @@
   <form class="feedback-form" action="#" method="post">
     <div class="input-group">
       <label class="input-label" for="userName">Ваше Имя</label>
-      <input class="input" id="userName" type="text" name="userName" required>
+      <input class="input" id="userName" type="text" name="client_name" required>
     </div>
     <div class="input-group">
       <label class="input-label" for="userEmail">Email</label>
-      <input class="input" id="userEmail" type="email" name="userEmail" required>
+      <input class="input" id="userEmail" type="email" name="client_email" required>
     </div>
     <div class="input-group">
       <label class="input-label" for="userMessage">Сообщение</label>
-      <textarea class="input textarea" id="userMessage" name="userMessage" required></textarea>
+      <textarea class="input textarea" id="userMessage" name="client_message"></textarea>
     </div>
 
     <div class="button-group">
