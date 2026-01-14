@@ -1,4 +1,4 @@
-import { BaseComponent } from '../../components/base/BaseComponent.js';
+import {BaseComponent} from '../../components/base/BaseComponent.js';
 
 export class NextTest extends BaseComponent {
   static get properties() {
@@ -26,15 +26,15 @@ export class NextTest extends BaseComponent {
     this._refs = {};
     // Данные для демонстрации списка через innerTemplate
     this.items = [
-      { name: 'Alice', role: 'Developer' },
-      { name: 'Bob', role: 'Designer' },
-      { name: 'Charlie', role: 'Manager' }
+      {name: 'Alice', role: 'Developer'},
+      {name: 'Bob', role: 'Designer'},
+      {name: 'Charlie', role: 'Manager'}
     ];
   }
 
   connectedCallback() {
     this.loadTemplate(import.meta.url);
-    if (getComputedStyle(this).display !== 'block') this.style.display = 'block'; 
+    if (getComputedStyle(this).display !== 'block') this.style.display = 'block';
   }
 
   render() {
@@ -55,9 +55,13 @@ export class NextTest extends BaseComponent {
   }
 
   _setupEventListeners() {
-    const { btn } = this._refs;
+    const {btn} = this._refs;
     if (btn) {
       btn.addEventListener('click', () => {
+        // Демонстрация evaluateString
+        const greeting = this.evaluateString("Привет, ${this.userName}! Тебе ${this.userAge} лет.");
+        console.log('Test evaluateString:', greeting);
+
         this.dispatchEvent(new CustomEvent('next-test-action', {
           detail: {
             userName: this.userName,
@@ -79,7 +83,7 @@ export class NextTest extends BaseComponent {
   }
 
   updateView() {
-    const { nameEl, ageEl, genderEl } = this._refs;
+    const {nameEl, ageEl, genderEl} = this._refs;
     if (nameEl) nameEl.textContent = this.userName;
     if (ageEl) ageEl.textContent = this.userAge;
     if (genderEl) genderEl.textContent = this.isMale ? 'Yes' : 'No';
@@ -91,29 +95,7 @@ export class NextTest extends BaseComponent {
    */
   _processInnerTemplates(name, content) {
     if (name === 'list-item') {
-      const container = this.querySelector('.list-container');
-      if (container && this.items && Array.isArray(this.items)) {
-        container.innerHTML = ''; // Очищаем контейнер
-
-        this.items.forEach(item => {
-          // Создаем временный элемент для парсинга HTML шаблона
-          const tempDiv = document.createElement('div');
-          tempDiv.innerHTML = content;
-
-          // Заполняем данными
-          const nameEl = tempDiv.querySelector('.item-name');
-          if (nameEl) nameEl.textContent = item.name;
-
-          const roleEl = tempDiv.querySelector('.item-role');
-          if (roleEl) roleEl.textContent = item.role;
-
-          // Переносим элементы в контейнер
-          // Используем Array.from, так как childNodes - живая коллекция
-          Array.from(tempDiv.childNodes).forEach(node => {
-            container.appendChild(node);
-          });
-        });
-      }
+      this.renderInnerTemplateList(this.items, content, '.list-container');
     }
   }
 }

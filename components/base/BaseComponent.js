@@ -265,6 +265,39 @@ export class BaseComponent extends HTMLElement {
   }
 
   /**
+   * Вычисляет строку как шаблонную литералу в контексте компонента.
+   * Позволяет использовать выражения типа "Привет, ${this.userName}"
+   * @param {string} templateString 
+   * @returns {string}
+   */
+  evaluateString(templateString) {
+    try {
+      return new Function('return `' + templateString + '`').call(this);
+    } catch (e) {
+      console.error('Ошибка при вычислении шаблонной строки:', e);
+      return templateString;
+    }
+  }
+
+  renderInnerTemplateList(items, templateContent, containerOrSelector) {
+    const container = typeof containerOrSelector === 'string'
+      ? this.querySelector(containerOrSelector)
+      : containerOrSelector;
+
+    if (!container || !Array.isArray(items)) return;
+
+    container.innerHTML = '';
+
+    items.forEach(item => {
+      this.item = item;
+      const itemHtml = this.evaluateString(templateContent);
+      container.insertAdjacentHTML('beforeend', itemHtml);
+    });
+
+    delete this.item;
+  }
+
+  /**
    * Обрабатывает шаблон: объединяет все стили в один блок и выносит в head.
    * @param {string} htmlContent 
    * @returns {string} HTML без стилей
