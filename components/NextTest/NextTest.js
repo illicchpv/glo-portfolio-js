@@ -2,47 +2,7 @@ import {BaseComponent} from '../../components/base/BaseComponent.js';
 
 export class NextTest extends BaseComponent {
   static get template() {
-    return `
-<style>
-  .next-test {
-    display: inline-block;
-    border: 1px solid #ccc;
-    padding: 10px;
-    margin: 10px;
-  }
-
-  .user-list {
-    margin-top: 10px;
-    border-top: 1px dashed #999;
-    padding-top: 10px;
-  }
-
-  .user-item {
-    padding: 5px;
-    border-bottom: 1px solid #eee;
-  }
-</style>
-
-<div class="next-test">
-  <h3>Next Test Component</h3>
-  <div>Name: <span class="next-test__name"></span></div>
-  <div>Age: <span class="next-test__age"></span></div>
-  <div>Gender: <span class="next-test__gender"></span></div>
-  <button class="next-test__btn">Action</button>
-
-  <div class="user-list">
-    <h4>Friends List (Inner Template Demo):</h4>
-    <div class="list-container"></div>
-  </div>
-</div>
-
-<!-- innerTemplate:list-item -->
-<div class="user-item">
-  <strong class="item-name">\${this.item.name}</strong>
-  (<span class="item-role">\${this.item.role}</span>)
-</div>
-<!-- /innerTemplate -->
-    `;
+    return null;
   }
 
   static get properties() {
@@ -80,6 +40,52 @@ export class NextTest extends BaseComponent {
   connectedCallback() {
     this.loadTemplate(import.meta.url);
     if (getComputedStyle(this).display !== 'block') this.style.display = 'block';
+
+    // 1. Инициализируем адаптивные стили
+    this._updateResponsiveStyles();
+
+    // 2. Подписываемся на изменение размера окна
+    this._resizeHandler = this._updateResponsiveStyles.bind(this);
+    window.addEventListener('resize', this._resizeHandler);
+  }
+
+  disconnectedCallback() {
+    if (this._resizeHandler) {
+      window.removeEventListener('resize', this._resizeHandler);
+    }
+    // Если бы у BaseComponent был disconnectedCallback, мы бы вызвали super.disconnectedCallback()
+  }
+
+  /**
+   * Управление адаптивными стилями через JS и CSS-переменные.
+   * Вычисляет значения в зависимости от ширины окна.
+   */
+  _updateResponsiveStyles() {
+    const w = window.innerWidth;
+    const s = this.style;
+
+    if (w <= 600) {
+      // Диапазон: Мобильные
+      s.setProperty('--h3-min', '18px');
+      s.setProperty('--h3-max', '22px');
+      // Fluid внутри диапазона 320-600
+      const fluid = this.calculateFluidValue(320, 600, 18, 22);
+      s.setProperty('--h3-fluid', `${fluid}px`);
+    } else if (w > 600 && w < 1200) {
+      // Диапазон: Планшеты
+      s.setProperty('--h3-min', '22px');
+      s.setProperty('--h3-max', '30px');
+      // Fluid внутри диапазона 600-1200
+      const fluid = this.calculateFluidValue(600, 1200, 22, 30);
+      s.setProperty('--h3-fluid', `${fluid}px`);
+    } else {
+      // Диапазон: Десктопы
+      s.setProperty('--h3-min', '30px');
+      s.setProperty('--h3-max', '40px');
+      // Fluid внутри диапазона 1200-1920
+      const fluid = this.calculateFluidValue(1200, 1920, 30, 40);
+      s.setProperty('--h3-fluid', `${fluid}px`);
+    }
   }
 
   render() {

@@ -318,6 +318,20 @@ export class BaseComponent extends HTMLElement {
   }
 
   /**
+   * Вычисляет промежуточное значение (fluid) на основе текущей ширины экрана.
+   * Линейная интерполяция: V = Vmin + (W - Wmin) * (Vmax - Vmin) / (Wmax - Wmin)
+   * @param {number} minWidth 
+   * @param {number} maxWidth 
+   * @param {number} minVal 
+   * @param {number} maxVal 
+   * @returns {number} Текущее значение
+   */
+  calculateFluidValue(minWidth, maxWidth, minVal, maxVal) {
+    const w = window.innerWidth;
+    return minVal + (w - minWidth) * (maxVal - minVal) / (maxWidth - minWidth);
+  }
+
+  /**
    * Обрабатывает шаблон: объединяет все стили в один блок и выносит в head.
    * @param {string} htmlContent 
    * @returns {string} HTML без стилей

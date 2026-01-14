@@ -288,7 +288,49 @@ _processInnerTemplates(name, content) {
 
 ---
 
-## 11. Общий жизненный цикл наследника
+## 11. Адаптивные значения (`calculateFluidValue`)
+
+Метод для вычисления "резиновых" (fluid) значений на основе текущей ширины экрана. Использует формулу линейной интерполяции.
+
+Сигнатура:
+
+```js
+calculateFluidValue(minWidth, maxWidth, minVal, maxVal)
+```
+
+Параметры:
+- `minWidth`, `maxWidth` — диапазон ширины экрана (в пикселях);
+- `minVal`, `maxVal` — соответствующие значения свойства (например, font-size).
+
+Возвращает:
+- Число (текущее значение).
+
+Пример использования в компоненте (для адаптивной типографики или отступов):
+
+```js
+_updateResponsiveStyles() {
+  const width = window.innerWidth;
+  // Например, шрифт меняется от 16px до 24px при ширине экрана от 320px до 1200px
+  const fontSize = this.calculateFluidValue(320, 1200, 16, 24);
+  
+  // Можно ограничить (clamp)
+  const clampedSize = Math.max(16, Math.min(24, fontSize));
+  
+  this.style.setProperty('--main-font-size', `${clampedSize}px`);
+}
+
+connectedCallback() {
+  super.connectedCallback(); // если есть
+  this.loadTemplate(import.meta.url);
+  
+  window.addEventListener('resize', () => this._updateResponsiveStyles());
+  this._updateResponsiveStyles();
+}
+```
+
+---
+
+## 12. Общий жизненный цикл наследника
 
 Типичный компонент на базе BaseComponent:
 

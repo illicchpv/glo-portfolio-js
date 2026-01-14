@@ -6,6 +6,14 @@
     margin: 10px;
   }
 
+  /* Адаптивная типографика и стили */
+  .next-test h3 {
+    /* Переменные выставляются через JS (_updateResponsiveStyles) */
+    font-size: clamp(var(--h3-min), var(--h3-fluid), var(--h3-max));
+    transition: font-size 0.2s;
+    margin-top: 0;
+  }
+
   .user-list {
     margin-top: 10px;
     border-top: 1px dashed #999;
