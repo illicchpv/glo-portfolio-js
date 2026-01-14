@@ -30,14 +30,14 @@ export class BaseComponent extends HTMLElement {
    */
   _initProperties() {
     const props = this.constructor.properties || {};
-    
+
     Object.keys(props).forEach(name => {
       const config = props[name];
       const attributeName = config.attribute;
-      
+
       // Инициализируем внутреннее значение
       const internalName = `_${name}`;
-      
+
       // Определение начального значения
       // Приоритет: значение на экземпляре (поле класса) -> дефолтное из конфига -> null
       let initialValue = config.default;
@@ -46,7 +46,7 @@ export class BaseComponent extends HTMLElement {
         // Удаляем свойство, чтобы оно не перекрывало будущие геттеры/сеттеры
         delete this[name];
       }
-      
+
       this[internalName] = initialValue !== undefined ? initialValue : null;
 
       // Если в прототипе (классе) уже есть геттер/сеттер, мы его не переопределяем,
@@ -56,7 +56,7 @@ export class BaseComponent extends HTMLElement {
       // const hasPrototypeGetter = ... 
       // В данном простом варианте мы всегда создаем аксессоры на экземпляре, 
       // если пользователь запросил это через properties.
-      
+
       Object.defineProperty(this, name, {
         get() {
           return this[internalName];
@@ -84,21 +84,21 @@ export class BaseComponent extends HTMLElement {
         configurable: true,
         enumerable: true
       });
-      
+
       // Применяем начальное значение через сеттер, чтобы синхронизировать атрибуты
       if (this[internalName] !== null && this[internalName] !== undefined) {
-          // Вызываем сеттер, но аккуратно, чтобы не триггерить лишние колбэки если не надо
-          // Но нам надо синхронизировать атрибут
-          const val = this[internalName];
-          // Сброс для триггера сеттера (немного хак, но надежно)
-          // this[name] = val; 
-          // Проще вручную выставить атрибут если его нет
-          if (attributeName && !this.hasAttribute(attributeName)) {
-               if (val !== null && val !== undefined && val !== false) {
-                   const attrValue = config.type === Boolean ? '' : String(val);
-                   this.setAttribute(attributeName, attrValue);
-               }
+        // Вызываем сеттер, но аккуратно, чтобы не триггерить лишние колбэки если не надо
+        // Но нам надо синхронизировать атрибут
+        const val = this[internalName];
+        // Сброс для триггера сеттера (немного хак, но надежно)
+        // this[name] = val; 
+        // Проще вручную выставить атрибут если его нет
+        if (attributeName && !this.hasAttribute(attributeName)) {
+          if (val !== null && val !== undefined && val !== false) {
+            const attrValue = config.type === Boolean ? '' : String(val);
+            this.setAttribute(attributeName, attrValue);
           }
+        }
       }
     });
   }
@@ -111,12 +111,12 @@ export class BaseComponent extends HTMLElement {
     if (oldValue === newValue) return;
 
     const props = this.constructor.properties || {};
-    
+
     for (const propName in props) {
       const config = props[propName];
       if (config.attribute === name) {
         let value = newValue;
-        
+
         // Приведение типов
         if (config.type === Boolean) {
           value = newValue !== null;
@@ -141,7 +141,7 @@ export class BaseComponent extends HTMLElement {
    * @param {any} oldValue 
    * @param {any} newValue 
    */
-  propertyChangedCallback(name, oldValue, newValue) {}
+  propertyChangedCallback(name, oldValue, newValue) { }
 
   /**
    * Загружает HTML шаблон с именем, совпадающим с именем класса компонента.
@@ -182,9 +182,56 @@ export class BaseComponent extends HTMLElement {
    */
   forceUpdate() {
     if (this._rawHtml) {
-      this.html = this._processConditionals(this._rawHtml);
+      // 1. Сначала обрабатываем условные конструкции
+      let processedHtml = this._processConditionals(this._rawHtml);
+
+      // 2. Затем извлекаем внутренние шаблоны (вырезаем их из HTML)
+      const {html, templates} = this._extractInnerTemplates(processedHtml);
+      this._innerTemplates = templates;
+
+      // 3. Устанавливаем основной HTML и рендерим
+      this.html = html;
       this.render();
+
+      // 4. После рендера (когда DOM готов) вызываем обработчики внутренних шаблонов
+      if (Object.keys(this._innerTemplates).length > 0) {
+        Object.entries(this._innerTemplates).forEach(([name, content]) => {
+          this._processInnerTemplates(name, content);
+        });
+      }
     }
+  }
+
+  /**
+   * Извлекает внутренние шаблоны <!-- innerTemplate:name -->...<!-- /innerTemplate -->
+   * @param {string} html 
+   * @returns {{html: string, templates: Object}}
+   */
+  _extractInnerTemplates(html) {
+    const templates = {};
+    // Ищем <!-- innerTemplate:name -->content<!-- /innerTemplate -->
+    // ([\w-]+) - захватывает имя шаблона (буквы, цифры, дефис)
+    // ([\s\S]*?) - лениво захватывает контент
+    const regex = /<!--\s*innerTemplate:([\w-]+)\s*-->([\s\S]*?)<!--\s*\/innerTemplate\s*-->/g;
+
+    const cleanHtml = html.replace(regex, (match, name, content) => {
+      templates[name] = content;
+      return ''; // Удаляем шаблон из основного HTML
+    });
+
+    return {html: cleanHtml, templates};
+  }
+
+  /**
+   * Обработчик внутренних шаблонов.
+   * Переопределите этот метод в компоненте для рендеринга списков/коллекций.
+   * @param {string} name - Имя шаблона
+   * @param {string} content - HTML содержимое шаблона
+   */
+  _processInnerTemplates(name, content) {
+    // По умолчанию ничего не делает.
+    // В наследнике:
+    // if (name === 'my-item') { ... }
   }
 
   /**
@@ -203,7 +250,7 @@ export class BaseComponent extends HTMLElement {
         // Создаем функцию для проверки условия в контексте компонента
         // Используем new Function вместо eval для чуть большей изоляции (хотя всё равно доступ к this)
         const checkCondition = new Function('return ' + condition);
-        
+
         // Вызываем функцию с привязкой к текущему экземпляру (this)
         if (checkCondition.call(this)) {
           return content;
@@ -225,13 +272,13 @@ export class BaseComponent extends HTMLElement {
   _processTemplate(htmlContent) {
     const tempDiv = document.createElement('div');
     tempDiv.innerHTML = htmlContent;
-    
+
     // Ищем все теги style
     const styles = tempDiv.querySelectorAll('style');
-    
+
     if (styles.length > 0) {
       const styleId = `style-${this.constructor.name}`;
-      
+
       // Если такого стиля еще нет в head, собираем все и добавляем
       if (!document.getElementById(styleId)) {
         let mergedCss = '';
@@ -239,7 +286,7 @@ export class BaseComponent extends HTMLElement {
           mergedCss += style.textContent + '\n';
           style.remove();
         });
-        
+
         if (mergedCss.trim()) {
           const newStyle = document.createElement('style');
           newStyle.id = styleId;
@@ -251,7 +298,7 @@ export class BaseComponent extends HTMLElement {
         styles.forEach(style => style.remove());
       }
     }
-    
+
     return tempDiv.innerHTML;
   }
 
@@ -269,7 +316,7 @@ export class BaseComponent extends HTMLElement {
         namedSlots.forEach(slot => {
           const slotName = slot.getAttribute('name');
           const userElements = userContentDiv.querySelectorAll(`[slot="${slotName}"]`);
-          
+
           if (userElements.length > 0) {
             slot.innerHTML = '';
             userElements.forEach(el => slot.appendChild(el));
@@ -285,7 +332,7 @@ export class BaseComponent extends HTMLElement {
           });
 
           // Если есть полезный контент (не только пробелы)
-          const hasContent = defaultNodes.some(node => 
+          const hasContent = defaultNodes.some(node =>
             node.nodeType === Node.ELEMENT_NODE || (node.nodeType === Node.TEXT_NODE && node.textContent.trim() !== '')
           );
 
@@ -309,18 +356,18 @@ export class BaseComponent extends HTMLElement {
 
     // Находим все элементы с атрибутом src
     const elements = this.querySelectorAll('[src]');
-    
+
     elements.forEach(el => {
       const src = el.getAttribute('src');
       if (src && (src.startsWith('./') || src.startsWith('../'))) {
         try {
           // Вычисляем абсолютный путь относительно JS файла компонента
           const absoluteSrc = new URL(src, this._baseUrl).href;
-          
+
           // Для img обновляем свойство src (и атрибут)
           if (el.tagName === 'IMG') {
-            el.src = absoluteSrc; 
-          } 
+            el.src = absoluteSrc;
+          }
           // Для остальных (custom elements) обновляем атрибут
           else {
             el.setAttribute('src', absoluteSrc);

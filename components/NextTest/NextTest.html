@@ -1,0 +1,39 @@
+<style>
+  .next-test {
+    display: inline-block;
+    border: 1px solid #ccc;
+    padding: 10px;
+    margin: 10px;
+  }
+
+  .user-list {
+    margin-top: 10px;
+    border-top: 1px dashed #999;
+    padding-top: 10px;
+  }
+
+  .user-item {
+    padding: 5px;
+    border-bottom: 1px solid #eee;
+  }
+</style>
+
+<div class="next-test">
+  <h3>Next Test Component</h3>
+  <div>Name: <span class="next-test__name"></span></div>
+  <div>Age: <span class="next-test__age"></span></div>
+  <div>Gender: <span class="next-test__gender"></span></div>
+  <button class="next-test__btn">Action</button>
+
+  <div class="user-list">
+    <h4>Friends List (Inner Template Demo):</h4>
+    <div class="list-container"></div>
+  </div>
+</div>
+
+<!-- innerTemplate:list-item -->
+<div class="user-item">
+  <strong class="item-name"></strong>
+  (<span class="item-role"></span>)
+</div>
+<!-- /innerTemplate -->
