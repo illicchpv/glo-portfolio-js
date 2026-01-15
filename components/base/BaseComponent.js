@@ -319,7 +319,7 @@ export class BaseComponent extends HTMLElement {
 
   /**
    * Вычисляет промежуточное значение (fluid) на основе текущей ширины экрана.
-   * Линейная интерполяция: V = Vmin + (W - Wmin) * (Vmax - Vmin) / (Wmax - Wmin)
+   * Линейная интерполяция: V = vMin + (W - wMin) * (vMax - vMin) / (wMax - wMin)
    * @param {number} minWidth 
    * @param {number} maxWidth 
    * @param {number} minVal 
